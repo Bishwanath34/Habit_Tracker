@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>HabitIQ – Habit Details</title>
+
+    <style>
+        /* ===== GLOBAL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Inter, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: center; /* center card vertically */
+            align-items: center;     /* center card horizontally */
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        /* ===== DARK MODE ===== */
+        body.dark-mode {
+            background: #1e1e2f;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .navbar,
+        body.dark-mode .footer {
+            background: rgba(40, 40, 40, 0.95);
+            color: #f0f0f0;
+            box-shadow: 0 8px 24px rgba(0,0,0,.3);
+        }
+
+        body.dark-mode .nav-left a,
+        body.dark-mode .nav-right a {
+            color: #ddd;
+        }
+
+        body.dark-mode .nav-left a:hover,
+        body.dark-mode .nav-right a:hover,
+        body.dark-mode .nav-left a.active {
+            color: #88f;
+        }
+
+        body.dark-mode .card {
+            background: #2c2c3f;
+            color: #f0f0f0;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, .5);
+        }
+
+        body.dark-mode .info-box {
+            background: #444;
+            color: #f0f0f0;
+            box-shadow: 0 4px 10px rgba(0,0,0,.2);
+        }
+
+        body.dark-mode .purpose-box {
+            background: #3b2f0b;
+            color: #ffec99;
+        }
+
+        body.dark-mode .status span {
+            background: linear-gradient(135deg,#1abc9c,#155d8b);
+        }
+
+        body.dark-mode .back-btn,
+        body.dark-mode .logout-btn {
+            background: #4444aa;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .back-btn:hover,
+        body.dark-mode .logout-btn:hover {
+            background: #8855cc;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .1);
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .nav-left,
+        .nav-center,
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-left a,
+        .nav-right a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .nav-left a:hover,
+        .nav-right a:hover {
+            color: #667eea;
+        }
+
+        .nav-left a.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .table-icon {
+            font-size: 18px;
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .table-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #667eea;
+            cursor: pointer;
+        }
+
+        .profile-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* ===== CONTENT ===== */
+        .content {
+            width: 95%;
+            max-width: 1000px; /* wider card */
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, .15);
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .habit-title {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .habit-title h2 {
+            font-size: 24px;
+            color: #667eea;
+        }
+
+        .habit-title span {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .info-box {
+            background: #f4f6ff;
+            padding: 8px 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,.05);
+            transition: all 0.3s ease;
+        }
+
+        .info-box .label {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .info-box .value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .status span {
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: linear-gradient(135deg,#43cea2,#185a9d);
+            color:white;
+            font-weight:600;
+        }
+
+        .purpose-box {
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: 12px;
+            background: #fff3cd;
+            color: #856404;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #4b5bdc;
+            transform: scale(1.05);
+        }
+
+        .logout-btn {
+            font-size:14px;
+            font-weight:500;
+            color:#555;
+            padding:6px 12px;
+            border-radius:8px;
+            background:#f5f5f5;
+            border:1px solid #ddd;
+            cursor:pointer;
+            transition:0.2s;
+        }
+        .logout-btn:hover {
+            background:#667eea;
+            color:white;
+            border-color:#667eea;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            height: 48px;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #555;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+<header class="navbar">
+    <div class="nav-left">
+        <div class="logo">HabitIQ</div>
+        <a th:href="@{/api/v1/habits/dashboard}">Dashboard</a>
+        <a th:href="@{/api/v1/habits/}" class="active">Habits</a>
+        <a th:href="@{/api/v1/settings}" class="table-icon" style="padding:6px 10px;">⚙️</a>
+    </div>
+    <div class="nav-center">
+        <a th:href="@{/api/v1/habits/table}" class="table-icon">📋</a>
+    </div>
+    <div class="nav-right">
+        <a th:href="@{/api/v1/progress}">Progress</a>
+        <a th:href="@{/api/v1/profile}" class="profile-circle">
+            <img th:if="${profile != null and profile.profileImage != null}" th:src="@{/api/v1/profile/image}" alt="Profile" />
+            <span th:if="${profile == null or profile.profileImage == null}" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:#e0e0e0;color:#9e9e9e;font-size:16px;">👤</span>
+        </a>
+        <!-- Logout button -->
+        <form th:action="@{/api/v1/auth/logout}" method="get" style="margin-left:8px;">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</header>
+
+<main class="content">
+    <section class="card">
+        <div class="habit-title">
+            <h2 th:text="${habit.habitName}">Morning Run</h2>
+            <span>✨ Build consistency, one step at a time</span>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <div class="label">📂 Category</div>
+                <div class="value" th:text="${habit.categoryEnum}"></div>
+            </div>
+            <div class="info-box">
+                <div class="label">🔁 Frequency</div>
+                <div class="value" th:text="${habit.frequencyEnum}"></div>
+            </div>
+            <div class="info-box">
+                <div class="label">⏰ Preferred Time</div>
+                <div class="value" th:text="${habit.preferredTimeOfDayEnum}"></div>
+            </div>
+            <div class="info-box">
+                <div class="label">⚡ Effort Level</div>
+                <div class="value" th:text="${habit.effortLevelEnum}"></div>
+            </div>
+            <div class="info-box">
+                <div class="label">🔥 Current Streak</div>
+                <div class="value" th:text="${habit.currentStreak} + ' days'">0 days</div>
+            </div>
+            <div class="info-box">
+                <div class="label">🏆 Longest Streak</div>
+                <div class="value" th:text="${habit.longestStreak} + ' days'">0 days</div>
+            </div>
+        </div>
+
+        <div class="status">
+            <span th:text="'🔥 Status: ' + ${habit.statusEnum}"></span>
+        </div>
+
+        <div class="purpose-box">
+            <strong>💡 Purpose</strong>
+            <p th:text="${habit.purpose}"></p>
+        </div>
+
+        <div class="info-box" style="margin-top:12px;">
+            <div class="label">📅 Created At</div>
+            <div class="value" th:text="${habit.createdAt}"></div>
+        </div>
+
+        <a th:href="@{/api/v1/habits/dashboard}" class="back-btn">⬅ Back to Dashboard</a>
+    </section>
+</main>
+
+<footer class="footer">
+    HabitIQ © 2025 — Created by Bishwanath Kumam
+</footer>
+
+<script>
+    // Dark mode toggle
+    const toggle = document.createElement('i');
+    toggle.id = 'darkModeToggle';
+    toggle.className = 'fa-solid fa-moon';
+    toggle.title = 'Toggle Dark Mode';
+    document.querySelector('.nav-right').prepend(toggle);
+
+    const body = document.body;
+    if(localStorage.getItem('darkMode') === 'true'){
+        body.classList.add('dark-mode');
+        toggle.classList.replace('fa-moon','fa-sun');
+    }
+
+    toggle.addEventListener('click', ()=>{
+        body.classList.toggle('dark-mode');
+        const enabled = body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode',enabled);
+        toggle.classList.toggle('fa-moon');
+        toggle.classList.toggle('fa-sun');
+    });
+</script>
+</body>
+</html>
