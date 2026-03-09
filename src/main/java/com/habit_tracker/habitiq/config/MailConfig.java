@@ -35,12 +35,9 @@ public class MailConfig {
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.starttls.required", "true");
-        props.put("mail.debug", "true"); // logs email sending in console
-        props.put("mail.smtp.connectiontimeout", "5000");
-        props.put("mail.smtp.timeout", "5000");
-        props.put("mail.smtp.writetimeout", "5000");
+        props.put("mail.smtp.ssl.enable", "true");   // SSL port 465
+        props.put("mail.smtp.starttls.enable", "false"); // Not needed for SSL
+        props.put("mail.debug", "true"); // optional for logs
 
         return mailSender;
     }
