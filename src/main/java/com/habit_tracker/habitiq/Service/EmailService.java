@@ -26,7 +26,9 @@ public class EmailService {
                 <div style="font-family:Arial,sans-serif">
                     <h2>Welcome to HabitIQ</h2>
                     <p>Please verify your email using the OTP below:</p>
-                     <h1 style="color:#4CAF50;">""" + otp + """</h1>
+                """
+                + "<h1 style=\"color:#4CAF50;\">" + otp + "</h1>"
+                + """
                     <p>This OTP will expire in 5 minutes.</p>
                     <br>
                     <p>Thank you for using HabitIQ 🚀</p>
