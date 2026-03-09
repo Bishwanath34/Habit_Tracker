@@ -2,7 +2,9 @@ HELP.md
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+# Force include Thymeleaf templates
+!src/main/resources/templates/
+!src/main/resources/templates/**/*.html
 ### STS ###
 .apt_generated
 .classpath
