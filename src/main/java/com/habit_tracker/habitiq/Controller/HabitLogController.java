@@ -1,10 +1,12 @@
 package com.habit_tracker.habitiq.Controller;
 
 import com.habit_tracker.habitiq.Entity.Habit;
+import com.habit_tracker.habitiq.Entity.User;
 import com.habit_tracker.habitiq.Enum.HabitLog.completionStatusEnum;
 import com.habit_tracker.habitiq.Repository.HabitRepository;
 import com.habit_tracker.habitiq.Service.HabitLogService;
 import com.habit_tracker.habitiq.Service.HabitService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,10 @@ public class HabitLogController {
     @Autowired
     private HabitService habitService;
     @PostMapping("/{habitId}/complete")
-    public String markCompleted(@PathVariable Long habitId) {
+    public String markCompleted(@PathVariable Long habitId, HttpSession session) {
+
+        User user = (User) session.getAttribute("loggedUser");
+        if(user == null) return "redirect:/api/v1/auth/loginForm";
         long Id=habitLogService.markHabit(habitId, completionStatusEnum.Completed);
         Habit habit=habitService.getHabitById(habitId);
         LocalDate today = LocalDate.now();

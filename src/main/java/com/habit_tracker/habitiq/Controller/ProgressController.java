@@ -37,7 +37,7 @@ public class ProgressController {
                                Model model, HttpSession session) {
 
         User user = (User) session.getAttribute("loggedUser");
-        if (user == null) return "redirect:/login";
+        if (user == null) return "redirect:/api/v1/auth/loginForm";
 
         // Fetch habits
         List<Habit> habits = habitRepository.findByUser(user);

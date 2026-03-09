@@ -24,7 +24,7 @@ public class ReminderSettingsController {
     @GetMapping
     public String getSettings(HttpSession session, Model model) {
         User user = (User) session.getAttribute("loggedUser");
-        if (user == null) return "redirect:/login";
+        if (user == null) return  "redirect:/api/v1/auth/loginForm";
 
         // Load reminder settings
         ReminderSetting setting = settingService.getSetting(user);
@@ -45,8 +45,7 @@ public class ReminderSettingsController {
                                  @RequestParam(required = false) boolean enabled,
                                  HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
-        if (user == null) return "redirect:/login";
-
+        if (user == null) return  "redirect:/api/v1/auth/loginForm";
         settingService.updateSetting(user, frequency, preferredTime, enabled);
         return "redirect:/api/v1/settings?success";
     }

@@ -46,7 +46,7 @@ public class HabitController {
     @GetMapping("/")
     public String showHabitForm(Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
-        if(user == null) return "redirect:/login";
+        if(user == null) return "/api/v1/auth/loginForm";
 
         model.addAttribute("habit", new Habit());
         model.addAttribute("categories", CategoryEnum.values());
@@ -68,7 +68,7 @@ public class HabitController {
     @PostMapping("/add")
     public String addHabit(@ModelAttribute Habit habit, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
-        if(user == null) return "redirect:/login";
+        if(user == null) return "/api/v1/auth/loginForm";
 
         habit.setUser(user);
         habit.setCreatedAt(LocalDateTime.now());
@@ -91,7 +91,7 @@ public class HabitController {
             HttpSession session) {
 
         User user = (User) session.getAttribute("loggedUser");
-        if(user == null) return "redirect:/login";
+        if(user == null) return "/api/v1/auth/loginForm";
 
         Pageable pageable = PageRequest.of(pageNo, size);
         Page<Habit> dashboardPage = habitService.getDashboardHabits(user, pageable);
@@ -146,7 +146,7 @@ public class HabitController {
     @GetMapping("/view/{id}")
     public String viewHabit(@PathVariable long id, Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
-        if(user == null) return "redirect:/login";
+        if(user == null) return "/api/v1/auth/loginForm";
 
         Habit habit = habitService.viewHabit(id);
         if(!habit.getUser().getUserId().equals(user.getUserId())) {
@@ -173,7 +173,7 @@ public class HabitController {
             HttpSession session) {
 
         User user = (User) session.getAttribute("loggedUser");
-        if(user == null) return "redirect:/login";
+        if(user == null) return "/api/v1/auth/loginForm";
 
         Pageable pageable = PageRequest.of(pageNo, size, Sort.by("createdAt").descending());
         Page<Habit> habitPage = habitRepository.findByUser(user, pageable);
@@ -200,7 +200,7 @@ public class HabitController {
             HttpSession session) {
 
         User user = (User) session.getAttribute("loggedUser");
-        if(user == null) return "redirect:/login";
+        if(user == null) return "redirect:/api/v1/auth/loginForm";
 
         Habit habit = habitRepository.findById(id).orElseThrow();
         if(!habit.getUser().getUserId().equals(user.getUserId())) {
@@ -220,7 +220,7 @@ public class HabitController {
     @PostMapping("/delete/{id}")
     public String deleteHabit(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute("loggedUser");
-        if(user == null) return "redirect:/login";
+        if(user == null) return "/api/v1/auth/loginForm";
 
         Habit habit = habitRepository.findById(id).orElse(null);
         if(habit != null && habit.getUser().getUserId().equals(user.getUserId())) {

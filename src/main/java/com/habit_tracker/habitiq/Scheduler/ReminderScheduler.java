@@ -23,25 +23,46 @@ public class ReminderScheduler {
     // Runs every hour
     @Scheduled(cron = "0 0 * * * ?")
     public void sendReminders() {
+
         List<ReminderSetting> settings = settingRepository.findAll();
 
-        for(ReminderSetting setting : settings) {
-            if(!setting.isEnabled()) continue;
+        LocalTime now = LocalTime.now();
 
-            LocalTime now = LocalTime.now();
-            boolean sendNow = false;
+        for (ReminderSetting setting : settings) {
 
-            switch(setting.getPreferredTime()) {
-                case Morning -> sendNow = now.getHour() >= 7 && now.getHour() < 10;
-                case Afternoon -> sendNow = now.getHour() >= 12 && now.getHour() < 15;
-                case Evening -> sendNow = now.getHour() >= 18 && now.getHour() < 21;
+            if (!setting.isEnabled()) {
+                continue;
             }
 
-            if(sendNow) {
+            boolean sendNow = false;
+
+            switch (setting.getPreferredTime()) {
+
+                case Morning:
+                    sendNow = now.getHour() >= 7 && now.getHour() < 10;
+                    break;
+
+                case Afternoon:
+                    sendNow = now.getHour() >= 12 && now.getHour() < 15;
+                    break;
+
+                case Evening:
+                    sendNow = now.getHour() >= 18 && now.getHour() < 21;
+                    break;
+            }
+
+            if (sendNow) {
                 try {
+
                     String email = setting.getUser().getEmail();
-                    emailService.sendOtpEmail(email, "⏰ Time to check your habits!");
-                } catch(MessagingException e) {
+
+                    emailService.sendReminderEmail(email);
+
+                    System.out.println("Reminder email sent to: " + email);
+
+                } catch (MessagingException e) {
+
+                    System.out.println("Failed to send reminder email");
                     e.printStackTrace();
                 }
             }

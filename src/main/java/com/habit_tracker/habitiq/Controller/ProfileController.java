@@ -23,7 +23,7 @@ public class ProfileController {
     public String profilePage(HttpSession session, Model model) {
         User loggedUser = (User) session.getAttribute("loggedUser");
         if (loggedUser == null) {
-            return "redirect:/login";
+            return  "redirect:/api/v1/auth/loginForm";
         }
 
         UserProfile profile = profileService.getUserProfile(loggedUser.getUserId());
