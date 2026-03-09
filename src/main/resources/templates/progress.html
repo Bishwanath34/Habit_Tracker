@@ -19,10 +19,10 @@
             display:flex;
             flex-direction:column;
             background:linear-gradient(135deg,#667eea,#764ba2);
+            transition: background 0.3s ease;
         }
 
         /* NAVBAR */
-
         .navbar{
             height:56px;
             background:rgba(255,255,255,0.95);
@@ -32,6 +32,7 @@
             align-items:center;
             box-shadow:0 8px 24px rgba(0,0,0,.1);
             flex-shrink:0;
+            transition: background 0.3s ease;
         }
 
         .nav-left,
@@ -81,6 +82,7 @@
             color:#667eea;
         }
 
+        /* PROFILE CIRCLE */
         .profile-circle {
             width:36px;
             height:36px;
@@ -90,6 +92,7 @@
             display:flex;
             align-items:center;
             justify-content:center;
+            cursor:pointer;
         }
 
         .profile-circle img {
@@ -99,8 +102,51 @@
             display:block;
         }
 
-        /* MAIN */
+        .profile-circle span {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:100%;
+            height:100%;
+            background:#e0e0e0;
+            color:#9e9e9e;
+            font-size:16px;
+        }
 
+        /* DARK MODE TOGGLE */
+        #darkToggle {
+            border:none;
+            background:none;
+            font-size:18px;
+            cursor:pointer;
+            line-height:1;
+            padding:0;
+            width:auto;
+        }
+        #darkToggle:hover {
+            transform:scale(1.2);
+            transition:0.2s;
+        }
+
+        /* LOGOUT BUTTON */
+        .logout-btn {
+            font-size:14px;
+            font-weight:500;
+            color:#555;
+            padding:6px 12px;
+            border-radius:8px;
+            background:#f5f5f5;
+            border:1px solid #ddd;
+            cursor:pointer;
+            transition:0.2s;
+        }
+        .logout-btn:hover {
+            background:#667eea;
+            color:white;
+            border-color:#667eea;
+        }
+
+        /* MAIN */
         .page-wrapper{
             flex:1;
             display:flex;
@@ -110,7 +156,6 @@
         }
 
         /* CARD */
-
         .card{
             width:100%;
             max-width:900px;
@@ -118,10 +163,10 @@
             border-radius:16px;
             padding:16px;
             box-shadow:0 14px 28px rgba(0,0,0,.15);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* HEADER ROW */
-
         .header-row{
             display:flex;
             justify-content:space-between;
@@ -141,6 +186,7 @@
             background:#f5f6ff;
             font-size:12px;
             cursor:pointer;
+            transition: all 0.2s ease;
         }
 
         .tab.active{
@@ -150,7 +196,6 @@
         }
 
         /* STREAK */
-
         .streaks{
             display:grid;
             grid-template-columns:repeat(3,1fr);
@@ -164,6 +209,7 @@
             padding:10px;
             text-align:center;
             box-shadow:0 4px 10px rgba(0,0,0,.1);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .streak-value{
@@ -173,7 +219,6 @@
         }
 
         /* PROGRESS */
-
         .progress-item{
             margin-bottom:6px;
         }
@@ -197,14 +242,12 @@
         }
 
         /* CHART */
-
         .chart-container{
             height:150px;
             margin-bottom:10px;
         }
 
         /* HEATMAP */
-
         .heatmap{
             display:grid;
             grid-template-columns:repeat(14,1fr);
@@ -217,6 +260,7 @@
             height:10px;
             background:#eee;
             border-radius:2px;
+            transition: background 0.3s ease;
         }
 
         .level1{background:#c6d6ff}
@@ -225,11 +269,11 @@
         .level4{background:#3f51b5}
 
         /* REMINDERS */
-
         .reminders{
             background:#f5f6ff;
             border-radius:10px;
             padding:8px;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .reminders h4{
@@ -242,7 +286,6 @@
         }
 
         /* INSIGHT */
-
         .insight{
             margin-top:8px;
             background:#eef0ff;
@@ -250,25 +293,10 @@
             padding:6px;
             font-size:12px;
             border-radius:6px;
+            transition: background 0.3s ease, color 0.3s ease;
         }
-.logout-btn {
-    font-size:14px;
-    font-weight:500;
-    color:#555;
-    padding:6px 12px;
-    border-radius:8px;
-    background:#f5f5f5;
-    border:1px solid #ddd;
-    cursor:pointer;
-    transition:0.2s;
-}
-.logout-btn:hover {
-    background:#667eea;
-    color:white;
-    border-color:#667eea;
-}
-        /* FOOTER */
 
+        /* FOOTER */
         .footer{
             height:48px;
             background:rgba(255,255,255,0.95);
@@ -279,15 +307,114 @@
             color:#555;
             box-shadow:0 -4px 16px rgba(0,0,0,.1);
             flex-shrink:0;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
+        /* DARK MODE STYLES */
+        body.dark-mode {
+            background: #1e1e2f;
+        }
+
+        body.dark-mode .navbar,
+        body.dark-mode .footer {
+            background: rgba(40, 40, 40, 0.95);
+            color: #f0f0f0;
+            box-shadow: 0 8px 24px rgba(0,0,0,.3);
+        }
+
+        body.dark-mode .nav-left a,
+        body.dark-mode .nav-right a {
+            color: #ddd;
+        }
+
+        body.dark-mode .nav-left a:hover,
+        body.dark-mode .nav-right a:hover,
+        body.dark-mode .nav-left a.active,
+        body.dark-mode .nav-right a.active {
+            color: #88f;
+        }
+
+        body.dark-mode .profile-circle span {
+            background: #4444aa;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .logout-btn {
+            background: #4444aa;
+            color: white;
+            border-color: #4444aa;
+        }
+
+        body.dark-mode .logout-btn:hover {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        body.dark-mode .card {
+            background: #2c2c3f;
+            color: #f0f0f0;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, .5);
+        }
+
+        body.dark-mode .streak-card {
+            background: #3c3c50;
+            color: #f0f0f0;
+            box-shadow: 0 4px 10px rgba(0,0,0,.2);
+        }
+
+        body.dark-mode .streak-value {
+            color: #88f;
+        }
+
+        body.dark-mode .progress-bar {
+            background: #444;
+        }
+
+        body.dark-mode .tab {
+            background: #3c3c50;
+            border-color: #555;
+            color: #ddd;
+        }
+
+        body.dark-mode .tab.active {
+            background: linear-gradient(to right,#667eea,#764ba2);
+            color: white;
+            border: none;
+        }
+
+        body.dark-mode .reminders {
+            background: #3c3c50;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .insight {
+            background: #3c3c50;
+            color: #f0f0f0;
+            border-left-color: #88f;
+        }
+
+        body.dark-mode .heat {
+            background: #444;
+        }
+
+        body.dark-mode .level1 { background: #2a3a6b; }
+        body.dark-mode .level2 { background: #3f51b5; }
+        body.dark-mode .level3 { background: #667eea; }
+        body.dark-mode .level4 { background: #88f; }
+
+        body.dark-mode canvas {
+            filter: brightness(0.9) contrast(1.1);
+        }
+
+        body.dark-mode .progress-label {
+            color: #ddd;
+        }
     </style>
 </head>
 
 <body>
 
 <!-- NAVBAR -->
-
 <header class="navbar">
 
     <div class="nav-left">
@@ -302,17 +429,18 @@
     </div>
 
     <div class="nav-right">
+        <button id="darkToggle">🌙</button>
         <a th:href="@{/api/v1/progress}" class="active">Progress</a>
 
-        <!-- Small circular profile -->
+        <!-- Profile circle -->
         <a th:href="@{/api/v1/profile}" class="profile-circle">
             <img th:if="${profile != null and profile.profileImage != null}"
                  th:src="@{/api/v1/profile/image}" alt="Profile" />
-            <span th:if="${profile == null or profile.profileImage == null}"
-                  style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:#e0e0e0;color:#9e9e9e;font-size:16px;">👤</span>
+            <span th:if="${profile == null or profile.profileImage == null}">👤</span>
         </a>
+
         <!-- Logout button -->
-        <form th:action="@{/api/v1/auth/logout}" method="get" style="margin-left:8px;">
+        <form th:action="@{/api/v1/auth/logout}" method="get" style="margin:0;padding:0;display:inline-block;">
             <button type="submit" class="logout-btn">Logout</button>
         </form>
     </div>
@@ -320,7 +448,6 @@
 </header>
 
 <!-- MAIN -->
-
 <main class="page-wrapper">
 
     <section class="card">
@@ -335,7 +462,6 @@
         </div>
 
         <!-- STREAKS -->
-
         <div class="streaks">
 
             <div class="streak-card">
@@ -356,7 +482,6 @@
         </div>
 
         <!-- HABIT PROGRESS -->
-
         <div th:each="habit : ${habits}" class="progress-item">
 
             <div class="progress-label" th:text="${habit.habitName}"></div>
@@ -370,17 +495,14 @@
         </div>
 
         <!-- CHART -->
-
         <div class="chart-container">
             <canvas id="consistencyChart"></canvas>
         </div>
 
         <!-- HEATMAP -->
-
         <div class="heatmap" id="heatmap"></div>
 
         <!-- REMINDERS -->
-
         <div class="reminders">
             <h4>🔔 Reminders</h4>
 
@@ -393,7 +515,6 @@
         </div>
 
         <!-- INSIGHT -->
-
         <div class="insight">
             💡 You have completed
             <span th:text="${#lists.size(logs)}"></span>
@@ -405,10 +526,32 @@
 </main>
 
 <!-- FOOTER -->
-
 <footer class="footer">
     HabitIQ © 2025 — Created by Bishwanath Kumam
 </footer>
+
+<!-- DARK MODE SCRIPT -->
+<script>
+    const toggleBtn = document.getElementById("darkToggle");
+
+    // Load saved mode
+    if (localStorage.getItem("darkMode") === "enabled") {
+        document.body.classList.add("dark-mode");
+        toggleBtn.textContent = "☀️";
+    }
+
+    toggleBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("darkMode", "enabled");
+            toggleBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("darkMode", "disabled");
+            toggleBtn.textContent = "🌙";
+        }
+    });
+</script>
 
 <script th:inline="javascript">
     // Chart.js line chart
@@ -426,8 +569,40 @@
 
         window.chartInstance = new Chart(ctx, {
             type: "line",
-            data: { labels, datasets: [{ data, borderColor: "#667eea", backgroundColor: "rgba(102,126,234,0.2)", fill: true, tension: 0.4 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, scales: {y: {beginAtZero: true}} }
+            data: {
+                labels,
+                datasets: [{
+                    data,
+                    borderColor: "#667eea",
+                    backgroundColor: "rgba(102,126,234,0.2)",
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {legend: {display: false}},
+                scales: {
+                    y: {beginAtZero: true},
+                    x: {
+                        grid: {
+                            color: document.body.classList.contains('dark-mode') ? '#444' : '#eee'
+                        },
+                        ticks: {
+                            color: document.body.classList.contains('dark-mode') ? '#ddd' : '#666'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: document.body.classList.contains('dark-mode') ? '#444' : '#eee'
+                        },
+                        ticks: {
+                            color: document.body.classList.contains('dark-mode') ? '#ddd' : '#666'
+                        }
+                    }
+                }
+            }
         });
     }
     renderChart(currentRange);
@@ -452,5 +627,7 @@
         else if(level === 4) div.classList.add('level4');
         heatmap.appendChild(div);
     });
-</script></body>
+</script>
+
+</body>
 </html>
