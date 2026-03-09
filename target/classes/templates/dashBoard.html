@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HabitIQ – Dashboard</title>
+
+    <style>
+        /* ===== GLOBAL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Inter, system-ui, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            height: 56px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .1);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .nav-left,
+        .nav-center,
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-left a,
+        .nav-right a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-left a:hover,
+        .nav-right a:hover {
+            color: #667eea;
+        }
+
+        .nav-left a.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .table-icon {
+            font-size: 18px;
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        .table-icon:hover {
+            transform: scale(1.1);
+            transition: 0.2s;
+        }
+
+        /* ===== PROFILE CIRCLE ===== */
+        .profile-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #667eea;
+            cursor: pointer;
+        }
+
+        .profile-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .logout-btn {
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard {
+            flex: 1;
+            max-width: 1100px;
+            margin: auto;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            overflow-y: auto;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, .15);
+        }
+
+        /* ===== HABIT LIST ===== */
+        .habit-list {
+            list-style: none;
+        }
+
+        .habit-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .1);
+        }
+
+        .habit-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .habit-icon {
+            font-size: 18px;
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .actions form {
+            display: inline-block;
+        }
+
+        .actions button {
+            border: none;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .done {
+            background: #4CAF50;
+        }
+
+        .partial {
+            background: #FFC107;
+        }
+
+        .missed {
+            background: #F44336;
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .pagination a {
+            padding: 6px 12px;
+            margin: 0 4px;
+            border-radius: 6px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .pagination a.active {
+            background: #333;
+        }
+
+        /* ===== STREAK ===== */
+        .streak-box {
+            display: flex;
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        .streak-card {
+            background: #f4f6ff;
+            padding: 14px 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .streak-number {
+            font-size: 28px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .streak-label {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* ===== MOOD SECTION ===== */
+        .mood-select {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            resize: none;
+        }
+ /* ===== DARK MODE ===== */
+        body.dark-mode {
+            background: #1e1e2f;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .navbar,
+        body.dark-mode .footer {
+            background: rgba(40, 40, 40, 0.95);
+            color: #f0f0f0;
+            box-shadow: 0 8px 24px rgba(0,0,0,.3);
+        }
+
+        body.dark-mode .nav-left a,
+        body.dark-mode .nav-right a {
+            color: #ddd;
+        }
+
+        body.dark-mode .nav-left a:hover,
+        body.dark-mode .nav-right a:hover,
+        body.dark-mode .nav-left a.active {
+            color: #88f;
+        }
+
+        body.dark-mode .card {
+            background: #2c2c3f;
+            color: #f0f0f0;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, .5);
+        }
+
+        body.dark-mode .info-box {
+            background: #444;
+            color: #f0f0f0;
+            box-shadow: 0 4px 10px rgba(0,0,0,.2);
+        }
+
+        body.dark-mode .purpose-box {
+            background: #3b2f0b;
+            color: #ffec99;
+        }
+
+        body.dark-mode .status span {
+            background: linear-gradient(135deg,#1abc9c,#155d8b);
+        }
+
+        body.dark-mode .back-btn,
+        body.dark-mode .logout-btn {
+            background: #4444aa;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .back-btn:hover,
+        body.dark-mode .logout-btn:hover {
+            background: #8855cc;
+        }
+        /* ===== FOOTER ===== */
+        .footer {
+            height: 48px;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #555;
+        }
+        #darkToggle:hover{
+    transform: scale(1.2);
+    transition: 0.2s;
+}
+    </style>
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<header class="navbar">
+
+    <div class="nav-left">
+        <div class="logo">HabitIQ</div>
+        <a th:href="@{/api/v1/habits/dashboard}" class="active">Dashboard</a>
+        <a th:href="@{/api/v1/habits/}">Habits</a>
+        <!-- Settings icon next to Habits -->
+        <a th:href="@{/api/v1/settings}" class="table-icon" style="padding:6px 10px;">⚙️</a>
+    </div>
+
+    <div class="nav-center">
+        <a th:href="@{/api/v1/habits/table}" class="table-icon">📋</a>
+    </div>
+
+    <div class="nav-right">
+        <button id="darkToggle" style="border:none;background:none;font-size:18px;cursor:pointer;">
+            🌙
+        </button>
+        <a th:href="@{/api/v1/progress}">Progress</a>
+
+        <!-- Profile image -->
+        <a th:href="@{/api/v1/profile}" class="profile-circle">
+            <img th:if="${profile != null and profile.profileImage != null}" th:src="@{/api/v1/profile/image}" alt="Profile" />
+            <span th:if="${profile == null or profile.profileImage == null}"
+                  style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:#e0e0e0;color:#9e9e9e;font-size:16px;">👤</span>
+        </a>
+
+        <!-- Logout button -->
+        <form th:action="@{/api/v1/auth/logout}" method="get">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+
+</header>
+
+<!-- ===== DASHBOARD CONTENT ===== -->
+<main class="dashboard">
+
+    <!-- TODAY HABITS -->
+    <section class="card">
+        <ul class="habit-list">
+            <li th:if="${#lists.isEmpty(habits)}" style="text-align:center;padding:20px;color:#777;">
+                🎉 All habits completed for today!
+            </li>
+
+            <li th:each="h : ${habits}" class="habit-item">
+                <a class="habit-name" th:href="@{/api/v1/habits/view/{id}(id=${h.habitId})}">
+                    <span class="habit-icon" th:switch="${h.categoryEnum}">
+                        <span th:case="${T(com.habit_tracker.habitiq.Enum.HabitEnum.CategoryEnum).Physical}">💪</span>
+                        <span th:case="${T(com.habit_tracker.habitiq.Enum.HabitEnum.CategoryEnum).Mental}">🧠</span>
+                        <span th:case="${T(com.habit_tracker.habitiq.Enum.HabitEnum.CategoryEnum).Emotional}">❤️</span>
+                        <span th:case="${T(com.habit_tracker.habitiq.Enum.HabitEnum.CategoryEnum).Social}">👥</span>
+                        <span th:case="${T(com.habit_tracker.habitiq.Enum.HabitEnum.CategoryEnum).Productivity}">⚡</span>
+                    </span>
+                    <span th:text="${h.habitName}"></span>
+                </a>
+
+                <div class="actions">
+                    <form th:action="@{/api/v1/habit-log/{id}/complete(id=${h.habitId})}" method="post">
+                        <button class="done">✔</button>
+                    </form>
+                    <form th:action="@{/api/v1/habit-log/{id}/partial(id=${h.habitId})}" method="post">
+                        <button class="partial">◐</button>
+                    </form>
+                    <form th:action="@{/api/v1/habit-log/{id}/missed(id=${h.habitId})}" method="post">
+                        <button class="missed">✖</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+
+        <!-- PAGINATION -->
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:if="${currentPage > 0}" th:href="@{/api/v1/habits/dashboard(pageNo=${currentPage-1},size=4)}">Previous</a>
+            <span th:each="i : ${#numbers.sequence(0,totalPages-1)}">
+                <a th:href="@{/api/v1/habits/dashboard(pageNo=${i},size=4)}" th:text="${i+1}" th:classappend="${i==currentPage}? 'active' : ''"></a>
+            </span>
+            <a th:if="${currentPage < totalPages-1}" th:href="@{/api/v1/habits/dashboard(pageNo=${currentPage+1},size=4)}">Next</a>
+        </div>
+    </section>
+
+    <!-- MOOD SECTION -->
+    <section class="card">
+        <h3>How are you feeling today?</h3>
+        <form th:action="@{/api/v1/moods/save}" method="post">
+            <select class="mood-select" name="moodType">
+                <option value="Happy">😊 Happy</option>
+                <option value="Neutral">😐 Neutral</option>
+                <option value="Sad">😔 Sad</option>
+                <option value="Stressed">😣 Stressed</option>
+            </select>
+            <br><br>
+            <textarea name="reflection" placeholder="Optional reflection..." rows="3"></textarea>
+            <br><br>
+            <button type="submit">Save Mood</button>
+        </form>
+
+        <div th:if="${todayMood != null}" style="margin-top:10px">
+            <b>Today's Mood:</b> <span th:text="${todayMood.moodType}"></span>
+            <p th:text="${todayMood.reflection}"></p>
+        </div>
+    </section>
+
+    <!-- STREAK SECTION -->
+    <section class="card">
+        <h2>🔥 Streak</h2>
+        <div class="streak-box">
+            <div class="streak-card">
+                <div class="streak-number" th:text="${currentStreak}">0</div>
+                <div class="streak-label">Current Streak</div>
+            </div>
+            <div class="streak-card">
+                <div class="streak-number" th:text="${bestStreak}">0</div>
+                <div class="streak-label">Best Streak</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INSIGHT SECTION -->
+    <section class="card">
+        <h3>Weekly Insight</h3>
+        <p style="margin-top:10px;color:#555" th:text="${insight}">
+            Your insights will appear here
+        </p>
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    HabitIQ © 2025 — Created by Bishwanath Kumam
+</footer>
+<script>
+
+    const toggleBtn = document.getElementById("darkToggle");
+
+    // Load saved mode
+    if (localStorage.getItem("darkMode") === "enabled") {
+        document.body.classList.add("dark-mode");
+        toggleBtn.textContent = "☀️";
+    }
+
+    toggleBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("darkMode", "enabled");
+            toggleBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("darkMode", "disabled");
+            toggleBtn.textContent = "🌙";
+        }
+    });
+
+</script>
+<!-- Add Font Awesome JS for the moon/sun icon -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HabitIQ – Verify OTP</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Inter,system-ui,sans-serif;
+        }
+
+        body{
+        min-height:100vh;
+        display:flex;
+        flex-direction:column;
+        background:linear-gradient(135deg,#667eea,#764ba2);
+        color:#333;
+        transition:all .3s ease;
+        }
+
+        /* ===== DARK MODE ===== */
+
+        body.dark-mode{
+        background:#1e1e2f;
+        color:#f0f0f0;
+        }
+
+        body.dark-mode .navbar,
+        body.dark-mode .footer{
+        background:#2c2c3f;
+        color:#f0f0f0;
+        }
+
+        body.dark-mode .card{
+        background:#2c2c3f;
+        color:#f0f0f0;
+        }
+
+        body.dark-mode .otp-input{
+        background:#3a3a4f;
+        color:white;
+        border-color:#888;
+        }
+
+        /* ===== NAVBAR ===== */
+
+        .navbar{
+        height:56px;
+        background:rgba(255,255,255,.95);
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:0 24px;
+        box-shadow:0 8px 24px rgba(0,0,0,.1);
+        }
+
+        .logo{
+        font-size:20px;
+        font-weight:700;
+        color:#667eea;
+        }
+
+        .dark-toggle{
+        border:none;
+        background:none;
+        font-size:18px;
+        cursor:pointer;
+        }
+
+        /* ===== OTP CARD ===== */
+
+        .card{
+        border-radius:16px;
+        max-width:420px;
+        width:100%;
+        padding:2rem;
+        background:white;
+        box-shadow:0 14px 28px rgba(0,0,0,.15);
+        text-align:center;
+        }
+
+        /* ===== OTP INPUT ===== */
+
+        .otp-input{
+        width:48px;
+        height:64px;
+        font-size:24px;
+        text-align:center;
+        border-radius:12px;
+        border:2px solid #667eea;
+        transition:transform .25s;
+        }
+
+        .otp-input:hover{
+        transform:scale(1.1);
+        }
+
+        /* ===== BUTTON ===== */
+
+        .btn-primary{
+        background:linear-gradient(135deg,#667eea,#764ba2);
+        border:none;
+        }
+
+        .btn-primary:hover{
+        background:linear-gradient(135deg,#5a67d8,#5a4ba2);
+        }
+
+        .text-danger{
+        font-size:13px;
+        }
+
+        /* ===== FOOTER ===== */
+
+        .footer{
+        height:48px;
+        background:rgba(255,255,255,.95);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:13px;
+        color:#555;
+        box-shadow:0 -4px 16px rgba(0,0,0,.1);
+        }
+
+        /* ===== MOBILE ===== */
+
+        @media(max-width:576px){
+
+        .card{
+        padding:1.5rem;
+        margin:0 1rem;
+        }
+
+        .otp-input{
+        width:40px;
+        height:56px;
+        font-size:20px;
+        }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- ===== HEADER ===== -->
+
+<header class="navbar">
+
+    <div class="logo">HabitIQ</div>
+
+    <button id="darkToggle" class="dark-toggle">🌙</button>
+
+</header>
+
+<!-- ===== MAIN ===== -->
+
+<div class="d-flex align-items-center justify-content-center flex-grow-1 p-3">
+
+    <div class="card">
+
+        <h3 class="fw-bold mb-3">Verify OTP</h3>
+
+        <p class="text-muted mb-4">
+            Enter the 6-digit code sent to
+            <span th:text="${email}">user@email.com</span>
+        </p>
+
+        <form th:action="@{/api/v1/auth/verify-otp/{id}(id=${Id})}" method="post">
+
+            <div class="d-flex justify-content-center gap-2 mb-3">
+
+                <input class="otp-input" maxlength="1" name="d1" required>
+                <input class="otp-input" maxlength="1" name="d2" required>
+                <input class="otp-input" maxlength="1" name="d3" required>
+                <input class="otp-input" maxlength="1" name="d4" required>
+                <input class="otp-input" maxlength="1" name="d5" required>
+                <input class="otp-input" maxlength="1" name="d6" required>
+
+            </div>
+
+            <p class="text-danger fw-semibold" th:text="${error}" th:if="${error}"></p>
+
+            <p class="small mt-2">
+
+                Didn't receive code?
+
+                <a th:href="@{/api/v1/auth/resend-otp/{id}(id=${Id})}">
+                    Resend OTP
+                </a>
+
+            </p>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 mt-3">
+                Verify OTP
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+
+<footer class="footer">
+    HabitIQ © 2025 — Created by Bishwanath Kumam
+</footer>
+
+<!-- ===== DARK MODE SCRIPT ===== -->
+
+<script>
+
+    const toggle = document.getElementById("darkToggle");
+
+    if(localStorage.getItem("darkMode")==="enabled"){
+    document.body.classList.add("dark-mode");
+    toggle.textContent="☀️";
+    }
+
+    toggle.addEventListener("click",()=>{
+
+    document.body.classList.toggle("dark-mode");
+
+    if(document.body.classList.contains("dark-mode")){
+    localStorage.setItem("darkMode","enabled");
+    toggle.textContent="☀️";
+    }else{
+    localStorage.setItem("darkMode","disabled");
+    toggle.textContent="🌙";
+    }
+
+    });
+
+</script>
+
+</body>
+</html>

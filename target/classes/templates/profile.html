@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>HabitIQ - Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:Inter,system-ui,sans-serif; }
+        body {
+            height:100vh;
+            display:flex;
+            flex-direction:column;
+            background:linear-gradient(135deg,#667eea,#764ba2);
+            transition: background 0.3s ease;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            height:56px;
+            width:100%;
+            background:rgba(255,255,255,0.95);
+            padding:0 24px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            box-shadow:0 8px 24px rgba(0,0,0,.1);
+            flex-shrink:0;
+            transition: background 0.3s ease;
+        }
+        .logo { font-size:20px; font-weight:700; color:#667eea; }
+        .nav-left, .nav-center, .nav-right { display:flex; align-items:center; gap:18px; }
+        .nav-left a, .nav-right a { text-decoration:none; color:#555; font-size:14px; font-weight:500; }
+        .nav-left a:hover, .nav-right a:hover { color:#667eea; }
+        .nav-left a.active, .nav-right a.active { color:#667eea; font-weight:600; }
+        .table-icon { font-size:18px; background:#667eea; color:white; padding:6px 12px; border-radius:8px; text-decoration:none; }
+        .table-icon:hover { transform:scale(1.1); transition:0.2s; }
+
+        /* PROFILE CIRCLE & LOGOUT */
+        .profile-circle {
+            width:36px;
+            height:36px;
+            border-radius:50%;
+            overflow:hidden;
+            border:2px solid #667eea;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+        }
+        .profile-circle img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+        }
+        .profile-circle span {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:100%;
+            height:100%;
+            background:#e0e0e0;
+            color:#9e9e9e;
+            font-size:16px;
+        }
+        .logout-btn {
+            font-size:14px;
+            font-weight:500;
+            color:#555;
+            padding:6px 12px;
+            border-radius:8px;
+            background:#f5f5f5;
+            border:1px solid #ddd;
+            cursor:pointer;
+            transition:0.2s;
+        }
+        .logout-btn:hover {
+            background:#667eea;
+            color:white;
+            border-color:#667eea;
+        }
+
+        /* DARK MODE TOGGLE */
+        #darkToggle {
+            border:none;
+            background:none;
+            font-size:18px;
+            cursor:pointer;
+            line-height:1;
+            padding:0;
+            width:auto;
+        }
+        #darkToggle:hover {
+            transform:scale(1.2);
+            transition:0.2s;
+        }
+
+        /* MAIN CARD */
+        .main {
+            flex:1;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        .profile-card {
+            width:300px;
+            background:white;
+            border-radius:14px;
+            box-shadow:0 10px 24px rgba(0,0,0,.15);
+            padding:16px;
+            text-align:center;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .profile-img {
+            width:95px;
+            height:95px;
+            border-radius:50%;
+            object-fit:cover;
+            border:3px solid #667eea;
+            margin-bottom:8px;
+        }
+        .default-avatar {
+            width:95px;
+            height:95px;
+            border-radius:50%;
+            background:#e0e0e0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:40px;
+            color:#9e9e9e;
+            margin:0 auto 8px;
+            border:3px solid #667eea;
+        }
+        .profile-name {
+            font-size:18px;
+            font-weight:600;
+        }
+        .profile-email {
+            font-size:12px;
+            color:#666;
+        }
+        hr {
+            margin:12px 0;
+            transition: border-color 0.3s ease;
+        }
+
+        .footer {
+            height:48px;
+            width:100%;
+            background:rgba(255,255,255,0.95);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:13px;
+            color:#555;
+            flex-shrink:0;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* DARK MODE STYLES */
+        body.dark-mode {
+            background: #1e1e2f;
+        }
+
+        body.dark-mode .navbar,
+        body.dark-mode .footer {
+            background: rgba(40, 40, 40, 0.95);
+            color: #f0f0f0;
+            box-shadow: 0 8px 24px rgba(0,0,0,.3);
+        }
+
+        body.dark-mode .nav-left a,
+        body.dark-mode .nav-right a {
+            color: #ddd;
+        }
+
+        body.dark-mode .nav-left a:hover,
+        body.dark-mode .nav-right a:hover,
+        body.dark-mode .nav-left a.active,
+        body.dark-mode .nav-right a.active {
+            color: #88f;
+        }
+
+        body.dark-mode .profile-circle span {
+            background: #4444aa;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .logout-btn {
+            background: #4444aa;
+            color: white;
+            border-color: #4444aa;
+        }
+
+        body.dark-mode .logout-btn:hover {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        body.dark-mode .profile-card {
+            background: #2c2c3f;
+            color: #f0f0f0;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, .5);
+        }
+
+        body.dark-mode .profile-email {
+            color: #aaa;
+        }
+
+        body.dark-mode .default-avatar {
+            background: #4444aa;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode hr {
+            border-color: #444;
+        }
+
+        body.dark-mode .form-control {
+            background: #3c3c50;
+            border-color: #555;
+            color: white;
+        }
+
+        body.dark-mode .form-control:focus {
+            background: #3c3c50;
+            color: white;
+            border-color: #88f;
+            box-shadow: 0 0 0 0.25rem rgba(136, 136, 255, 0.25);
+        }
+
+        body.dark-mode .btn-outline-secondary {
+            color: #ddd;
+            border-color: #666;
+        }
+
+        body.dark-mode .btn-outline-secondary:hover {
+            background: #4444aa;
+            color: white;
+            border-color: #4444aa;
+        }
+
+        body.dark-mode .btn-outline-danger {
+            color: #ff9999;
+            border-color: #ff6666;
+        }
+
+        body.dark-mode .btn-outline-danger:hover {
+            background: #ff4444;
+            color: white;
+            border-color: #ff4444;
+        }
+
+        body.dark-mode .btn-primary {
+            background: #4444aa;
+            border-color: #4444aa;
+        }
+
+        body.dark-mode .btn-primary:hover {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        /* Additional Bootstrap overrides for dark mode */
+        body.dark-mode .text-muted {
+            color: #aaa !important;
+        }
+
+        body.dark-mode .alert {
+            background: #2c2c3f;
+            color: #f0f0f0;
+            border-color: #444;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<header class="navbar">
+    <div class="nav-left">
+        <div class="logo">HabitIQ</div>
+        <a th:href="@{/api/v1/habits/dashboard}">Dashboard</a>
+        <a th:href="@{/api/v1/habits/}">Habits</a>
+        <a th:href="@{/api/v1/settings}" class="table-icon" style="padding:6px 10px;">⚙️</a>
+    </div>
+
+    <div class="nav-center">
+        <a th:href="@{/api/v1/habits/table}" class="table-icon">📋</a>
+    </div>
+
+    <div class="nav-right">
+        <button id="darkToggle">🌙</button>
+        <a th:href="@{/api/v1/progress}">Progress</a>
+
+        <!-- Profile Circle -->
+        <a th:href="@{/api/v1/profile}" class="profile-circle">
+            <img th:if="${profile != null and profile.profileImage != null}" th:src="@{/api/v1/profile/image}" alt="Profile" />
+            <span th:if="${profile == null or profile.profileImage == null}">👤</span>
+        </a>
+
+        <!-- Logout -->
+        <form th:action="@{/api/v1/auth/logout}" method="get" style="margin:0;padding:0;display:inline-block;">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main">
+    <div class="profile-card">
+
+        <!-- Profile Image / Default Avatar -->
+        <div>
+            <img id="profileImage"
+                 th:if="${profile != null and profile.profileImage != null}"
+                 th:src="@{/api/v1/profile/image}"
+                 class="profile-img"/>
+            <div th:if="${profile == null or profile.profileImage == null}" class="default-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+        </div>
+
+        <!-- User Info -->
+        <div class="profile-name" th:text="${user.name}"></div>
+        <div class="profile-email" th:text="${user.email}"></div>
+        <hr>
+
+        <!-- Upload Image -->
+        <form id="uploadForm" th:action="@{/api/v1/profile/upload-image}" method="post" enctype="multipart/form-data">
+            <div class="mb-2">
+                <input type="file" name="file" class="form-control form-control-sm" accept="image/*" required>
+            </div>
+            <button class="btn btn-primary btn-sm w-100 mb-2" type="submit">
+                <i class="fa-solid fa-camera"></i>
+                <span th:text="${profile != null and profile.profileImage != null} ? 'Change Image' : 'Upload Image'"></span>
+            </button>
+        </form>
+
+        <!-- Delete Image -->
+        <form th:if="${profile != null and profile.profileImage != null}" th:action="@{/api/v1/profile/remove-image}" method="post">
+            <button class="btn btn-outline-danger btn-sm w-100" type="submit">
+                <i class="fa-solid fa-trash"></i> Remove Image
+            </button>
+        </form>
+
+        <hr>
+
+        <!-- Back Button -->
+        <a th:href="@{/api/v1/habits/dashboard}" class="btn btn-outline-secondary btn-sm w-100 mb-2">
+            <i class="fa-solid fa-arrow-left"></i> Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    HabitIQ © 2025 — Created by Bishwanath Kumam
+</footer>
+
+<!-- ===== DARK MODE SCRIPT ===== -->
+<script>
+    const toggleBtn = document.getElementById("darkToggle");
+
+    // Load saved mode
+    if (localStorage.getItem("darkMode") === "enabled") {
+        document.body.classList.add("dark-mode");
+        toggleBtn.textContent = "☀️";
+    }
+
+    toggleBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("darkMode", "enabled");
+            toggleBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("darkMode", "disabled");
+            toggleBtn.textContent = "🌙";
+        }
+    });
+</script>
+
+<!-- ===== AJAX SCRIPT ===== -->
+<script>
+    const form = document.getElementById('uploadForm');
+    const img = document.getElementById('profileImage');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fileInput = form.querySelector('input[name="file"]');
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const res = await fetch(form.action, { method: 'POST', body: formData });
+            if(res.ok){
+                if(img){
+                    img.src = '/api/v1/profile/image?' + new Date().getTime();
+                } else {
+                    const avatarDiv = document.querySelector('.default-avatar');
+                    if(avatarDiv){
+                        const newImg = document.createElement('img');
+                        newImg.id = "profileImage";
+                        newImg.src = '/api/v1/profile/image?' + new Date().getTime();
+                        newImg.className = 'profile-img';
+                        avatarDiv.replaceWith(newImg);
+                    }
+                }
+                fileInput.value = '';
+                alert('Profile image updated!');
+            } else {
+                alert('Upload failed!');
+            }
+        } catch(err){
+            console.error(err);
+            alert('Upload failed due to network error!');
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Create Habit</title>
+
+    <style>
+
+        /* ===== GLOBAL ===== */
+        *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Inter,system-ui,sans-serif;
+        }
+
+        body{
+        background:linear-gradient(135deg,#667eea,#764ba2);
+        height:100vh;
+        overflow:hidden;
+        display:flex;
+        flex-direction:column;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar{
+        height:56px;
+        background:rgba(255,255,255,.95);
+        padding:0 24px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        box-shadow:0 8px 24px rgba(0,0,0,.1);
+        }
+
+        .logo{
+        font-size:20px;
+        font-weight:700;
+        color:#667eea;
+        }
+
+        .nav-left,
+        .nav-center,
+        .nav-right{
+        display:flex;
+        align-items:center;
+        gap:18px;
+        }
+
+        .nav-left a,
+        .nav-right a{
+        text-decoration:none;
+        color:#555;
+        font-size:14px;
+        font-weight:500;
+        }
+
+        .nav-left a:hover,
+        .nav-right a:hover{
+        color:#667eea;
+        }
+
+        .nav-left a.active{
+        color:#667eea;
+        font-weight:600;
+        }
+
+        .table-icon{
+        font-size:18px;
+        background:#667eea;
+        color:white;
+        padding:6px 12px;
+        border-radius:8px;
+        text-decoration:none;
+        }
+
+        .table-icon:hover{
+        transform:scale(1.1);
+        transition:0.2s;
+        }
+
+        /* ===== PROFILE CIRCLE ===== */
+        .profile-circle{
+        width:36px;
+        height:36px;
+        border-radius:50%;
+        overflow:hidden;
+        border:2px solid #667eea;
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        flex-shrink:0;
+        }
+
+        .profile-circle img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        border-radius:50%;
+        display:block;
+        }
+
+        .profile-circle span{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        width:100%;
+        height:100%;
+        background:#e0e0e0;
+        color:#9e9e9e;
+        font-size:16px;
+        }
+
+        /* ===== LOGOUT BUTTON ===== */
+        .logout-btn{
+        font-size:14px;
+        font-weight:500;
+        color:#555;
+        padding:6px 12px;
+        border-radius:8px;
+        background:#f5f5f5;
+        border:1px solid #ddd;
+        cursor:pointer;
+        transition:0.2s;
+        }
+
+        .logout-btn:hover{
+        background:#667eea;
+        color:white;
+        border-color:#667eea;
+        }
+
+        /* ===== DARK TOGGLE ===== */
+        #darkToggle{
+        border:none;
+        background:none;
+        font-size:18px;
+        cursor:pointer;
+        line-height:1;
+        padding:0;
+        width:auto;
+        }
+
+        #darkToggle:hover{
+        transform:scale(1.2);
+        transition:0.2s;
+        }
+
+        /* ===== ONBOARDING ===== */
+        .onboarding-wrapper{
+        flex:1;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        }
+
+        .container{
+        background:#fff;
+        width:420px;
+        padding:30px;
+        border-radius:18px;
+        box-shadow:0 25px 60px rgba(0,0,0,.25);
+        }
+
+        .progress-bar{
+        height:6px;
+        background:linear-gradient(to right,#667eea,#764ba2);
+        border-radius:10px;
+        margin-bottom:8px;
+        }
+
+        #stepText{
+        font-size:12px;
+        color:#777;
+        }
+
+        .screen{
+        display:none;
+        }
+
+        .screen.active{
+        display:block;
+        }
+
+        .grid{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:14px;
+        margin-bottom:20px;
+        }
+
+        .grid.single{
+        grid-template-columns:1fr;
+        }
+
+        .card{
+        padding:16px;
+        border-radius:12px;
+        border:2px solid #eee;
+        text-align:center;
+        cursor:pointer;
+        }
+
+        .card.selected{
+        background:#667eea;
+        color:white;
+        border-color:#667eea;
+        }
+
+        input,textarea{
+        width:100%;
+        padding:10px;
+        margin-bottom:16px;
+        border-radius:10px;
+        border:1px solid #ddd;
+        }
+
+        button{
+        width:100%;
+        padding:12px;
+        border:none;
+        border-radius:22px;
+        background:linear-gradient(to right,#667eea,#764ba2);
+        color:white;
+        font-size:14px;
+        cursor:pointer;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer{
+        height:48px;
+        background:rgba(255,255,255,.95);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:13px;
+        color:#555;
+        }
+
+        /* ===== DARK MODE ===== */
+        body.dark-mode{
+        background:#1e1e2f;
+        color:#f0f0f0;
+        }
+
+        body.dark-mode .navbar,
+        body.dark-mode .footer{
+        background:rgba(40,40,40,.95);
+        color:#f0f0f0;
+        box-shadow:0 8px 24px rgba(0,0,0,.3);
+        }
+
+        body.dark-mode .nav-left a,
+        body.dark-mode .nav-right a{
+        color:#ddd;
+        }
+
+        body.dark-mode .nav-left a:hover,
+        body.dark-mode .nav-right a:hover,
+        body.dark-mode .nav-left a.active{
+        color:#88f;
+        }
+
+        body.dark-mode .container{
+        background:#2c2c3f;
+        color:#f0f0f0;
+        }
+
+        body.dark-mode input,
+        body.dark-mode textarea{
+        background:#3c3c50;
+        border-color:#555;
+        color:white;
+        }
+
+        body.dark-mode .card{
+        background:#2c2c3f;
+        color:#f0f0f0;
+        border-color:#444;
+        }
+
+        body.dark-mode .logout-btn{
+        background:#4444aa;
+        color:white;
+        border-color:#4444aa;
+        }
+
+        body.dark-mode .profile-circle span{
+        background:#4444aa;
+        color:#f0f0f0;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<header class="navbar">
+
+    <div class="nav-left">
+        <div class="logo">HabitIQ</div>
+        <a th:href="@{/api/v1/habits/dashboard}">Dashboard</a>
+        <a th:href="@{/api/v1/habits/}" class="active">Habits</a>
+        <a th:href="@{/api/v1/settings}" class="table-icon" style="padding:6px 10px;">⚙️</a>
+    </div>
+
+    <div class="nav-center">
+        <a th:href="@{/api/v1/habits/table}" class="table-icon">📋</a>
+    </div>
+
+    <div class="nav-right">
+        <button id="darkToggle">🌙</button>
+        <a th:href="@{/api/v1/progress}">Progress</a>
+
+        <a th:href="@{/api/v1/profile}" class="profile-circle">
+            <img th:if="${profile != null and profile.profileImage != null}"
+                 th:src="@{/api/v1/profile/image}"
+                 alt="Profile">
+            <span th:if="${profile == null or profile.profileImage == null}">👤</span>
+        </a>
+
+        <form th:action="@{/api/v1/auth/logout}" method="get" style="margin:0;padding:0;display:inline-block;">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="onboarding-wrapper">
+
+    <div class="container">
+
+        <div class="progress-bar" id="progressBar"></div>
+        <span id="stepText">Step 1 of 7</span>
+
+        <form th:action="@{/api/v1/habits/add}" th:object="${habit}" method="post" id="habitForm">
+
+            <input type="hidden" th:field="*{habitName}" id="habitNameField">
+            <input type="hidden" th:field="*{categoryEnum}" id="categoryField">
+            <input type="hidden" th:field="*{frequencyEnum}" id="frequencyField">
+            <input type="hidden" th:field="*{preferredTimeOfDayEnum}" id="timeField">
+            <input type="hidden" th:field="*{effortLevelEnum}" id="effortField">
+            <input type="hidden" th:field="*{purpose}" id="purposeField">
+            <input type="hidden" th:field="*{statusEnum}" id="statusField">
+
+        </form>
+
+        <div class="screen active">
+            <h2>Name Your Habit</h2>
+            <input type="text" id="habitNameInput" placeholder="Morning Exercise">
+            <button onclick="saveHabitName()">Next</button>
+        </div>
+
+        <div class="screen">
+            <h2>Category</h2>
+            <div class="grid">
+
+                <div class="card"
+                     th:each="c : ${categories}"
+                     th:text="${c}"
+                     th:attr="data-category=${c}">
+                </div>
+
+            </div>
+            <button onclick="nextScreen()">Next</button>
+        </div>
+
+        <div class="screen">
+            <h2>Frequency</h2>
+            <div class="grid single">
+
+                <div class="card"
+                     th:each="f : ${frequencies}"
+                     th:text="${f}"
+                     th:attr="data-frequency=${f}">
+                </div>
+
+            </div>
+            <button onclick="nextScreen()">Next</button>
+        </div>
+
+        <div class="screen">
+            <h2>Preferred Time</h2>
+            <div class="grid single">
+
+                <div class="card"
+                     th:each="t : ${times}"
+                     th:text="${t}"
+                     th:attr="data-time=${t}">
+                </div>
+
+            </div>
+            <button onclick="nextScreen()">Next</button>
+        </div>
+
+        <div class="screen">
+            <h2>Effort Level</h2>
+            <div class="grid single">
+
+                <div class="card"
+                     th:each="e : ${efforts}"
+                     th:text="${e}"
+                     th:attr="data-effort=${e}">
+                </div>
+
+            </div>
+            <button onclick="nextScreen()">Next</button>
+        </div>
+
+        <div class="screen">
+            <h2>Purpose</h2>
+            <textarea id="purposeInput"></textarea>
+            <button onclick="savePurpose()">Next</button>
+        </div>
+
+        <div class="screen">
+            <h2>Status</h2>
+            <div class="grid single">
+
+                <div class="card"
+                     th:each="s : ${statuses}"
+                     th:text="${s}"
+                     th:attr="data-status=${s}">
+                </div>
+
+            </div>
+            <button onclick="submitHabit()">Finish</button>
+        </div>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    HabitIQ © 2025 — Created by Bishwanath Kumam
+</footer>
+
+<script>
+
+    const toggleBtn = document.getElementById("darkToggle");
+
+    // Load saved mode
+    if (localStorage.getItem("darkMode") === "enabled") {
+        document.body.classList.add("dark-mode");
+        toggleBtn.textContent = "☀️";
+    }
+
+    toggleBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("darkMode", "enabled");
+            toggleBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("darkMode", "disabled");
+            toggleBtn.textContent = "🌙";
+        }
+    });
+
+</script>
+
+</body>
+</html>
