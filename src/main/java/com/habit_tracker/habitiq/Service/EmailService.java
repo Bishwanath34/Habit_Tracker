@@ -1,35 +1,39 @@
 package com.habit_tracker.habitiq.Service;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sendgrid.SendGrid;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.Method;
+import com.sendgrid.Mail;
+import com.sendgrid.Email;
+import com.sendgrid.Content;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class EmailService {
 
-     @Value("${SENDGRID_API_KEY}")
+    @Value("${SENDGRID_API_KEY}")
     private String sendGridApiKey;
 
     @Value("${EMAIL_FROM}")
     private String mailFrom;
 
-    // Send OTP email
+    // ================= SEND OTP EMAIL =================
     public void sendOtpEmail(String toEmail, String otp) throws IOException {
         Email from = new Email(mailFrom);
         Email to = new Email(toEmail);
         String subject = "HabitIQ – Email Verification OTP";
         Content content = new Content("text/html",
                 "<div style=\"font-family:Arial,sans-serif\">" +
-                "<h2>Welcome to HabitIQ</h2>" +
-                "<p>Please verify your email using the OTP below:</p>" +
-                "<h1 style=\"color:#4CAF50;\">" + otp + "</h1>" +
-                "<p>This OTP will expire in 5 minutes.</p>" +
-                "<p>Thank you for using HabitIQ 🚀</p>" +
-                "</div>"
+                        "<h2>Welcome to HabitIQ</h2>" +
+                        "<p>Please verify your email using the OTP below:</p>" +
+                        "<h1 style=\"color:#4CAF50;\">" + otp + "</h1>" +
+                        "<p>This OTP will expire in 5 minutes.</p>" +
+                        "<p>Thank you for using HabitIQ 🚀</p>" +
+                        "</div>"
         );
 
         Mail mail = new Mail(from, subject, to, content);
@@ -44,17 +48,17 @@ public class EmailService {
         System.out.println("SendGrid OTP status: " + response.getStatusCode());
     }
 
-    // Send reminder email
+    // ================= SEND REMINDER EMAIL =================
     public void sendReminderEmail(String toEmail, String messageText) throws IOException {
         Email from = new Email(mailFrom);
         Email to = new Email(toEmail);
         String subject = "HabitIQ Reminder ⏰";
         Content content = new Content("text/html",
                 "<div style=\"font-family:Arial,sans-serif\">" +
-                "<h2>⏰ Habit Reminder</h2>" +
-                "<p>" + messageText + "</p>" +
-                "<p>Open HabitIQ and track your progress.</p>" +
-                "</div>"
+                        "<h2>⏰ Habit Reminder</h2>" +
+                        "<p>" + messageText + "</p>" +
+                        "<p>Open HabitIQ and track your progress.</p>" +
+                        "</div>"
         );
 
         Mail mail = new Mail(from, subject, to, content);
