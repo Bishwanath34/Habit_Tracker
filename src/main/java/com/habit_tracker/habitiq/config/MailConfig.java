@@ -12,16 +12,19 @@ import java.util.Properties;
 public class MailConfig {
 
     @Value("${spring.mail.username}")
-    private String mailUsername;
+    private String mailUsername; // "apikey" for SendGrid
 
     @Value("${spring.mail.password}")
-    private String mailPassword;
+    private String mailPassword; // SendGrid API key
 
     @Value("${spring.mail.host}")
     private String mailHost;
 
     @Value("${spring.mail.port}")
     private int mailPort;
+
+    @Value("${spring.mail.from}")
+    private String mailFrom;
 
     @Bean
     public JavaMailSender javaMailSender() {
@@ -35,9 +38,12 @@ public class MailConfig {
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.ssl.enable", "true");   // SSL port 465
-        props.put("mail.smtp.starttls.enable", "false"); // Not needed for SSL
-        props.put("mail.debug", "true"); // optional for logs
+        props.put("mail.smtp.starttls.enable", "true");  // STARTTLS for port 587
+        props.put("mail.smtp.starttls.required", "true");
+        props.put("mail.debug", "true");
+        props.put("mail.smtp.connectiontimeout", "5000");
+        props.put("mail.smtp.timeout", "5000");
+        props.put("mail.smtp.writetimeout", "5000");
 
         return mailSender;
     }
