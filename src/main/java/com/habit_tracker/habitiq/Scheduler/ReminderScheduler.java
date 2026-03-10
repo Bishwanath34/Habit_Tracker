@@ -18,17 +18,15 @@ public class ReminderScheduler {
     private ReminderSettingRepository settingRepository;
 
     @Autowired
-    private EmailService emailService;
+    private SendGridEmailService emailService;
 
-    // Runs every hour
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?") // every hour
     public void sendReminders() {
         List<ReminderSetting> settings = settingRepository.findAll();
-
         LocalTime now = LocalTime.now();
 
-        for(ReminderSetting setting : settings) {
-            if(!setting.isEnabled()) continue;
+        for (ReminderSetting setting : settings) {
+            if (!setting.isEnabled()) continue;
 
             boolean sendNow = switch(setting.getPreferredTime()) {
                 case Morning -> now.getHour() >= 7 && now.getHour() < 10;
@@ -36,11 +34,11 @@ public class ReminderScheduler {
                 case Evening -> now.getHour() >= 18 && now.getHour() < 21;
             };
 
-            if(sendNow) {
+            if (sendNow) {
                 try {
                     String email = setting.getUser().getEmail();
                     emailService.sendReminderEmail(email, "Don't forget to complete your habits today! Consistency builds success 💪");
-                } catch(MessagingException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
