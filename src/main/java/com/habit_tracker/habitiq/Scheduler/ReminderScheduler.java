@@ -3,11 +3,11 @@ package com.habit_tracker.habitiq.Scheduler;
 import com.habit_tracker.habitiq.Entity.ReminderSetting;
 import com.habit_tracker.habitiq.Repository.ReminderSettingRepository;
 import com.habit_tracker.habitiq.Service.EmailService;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class ReminderScheduler {
     private ReminderSettingRepository settingRepository;
 
     @Autowired
-    private SendGridEmailService emailService;
+    private EmailService emailService; // keep the original class name
 
     @Scheduled(cron = "0 0 * * * ?") // every hour
     public void sendReminders() {
@@ -37,8 +37,9 @@ public class ReminderScheduler {
             if (sendNow) {
                 try {
                     String email = setting.getUser().getEmail();
-                    emailService.sendReminderEmail(email, "Don't forget to complete your habits today! Consistency builds success 💪");
-                } catch (IOException e) {
+                    emailService.sendReminderEmail(email,
+                            "Don't forget to complete your habits today! Consistency builds success 💪");
+                } catch (IOException e) { // changed from MessagingException to IOException
                     e.printStackTrace();
                 }
             }
