@@ -21,7 +21,7 @@ public class EmailService {
     @Value("${EMAIL_FROM}")
     private String mailFrom;
 
-    // ================= SEND OTP EMAIL =================
+    // Send OTP email
     public void sendOtpEmail(String toEmail, String otp) throws IOException {
         Email from = new Email(mailFrom);
         Email to = new Email(toEmail);
@@ -48,7 +48,7 @@ public class EmailService {
         System.out.println("SendGrid OTP status: " + response.getStatusCode());
     }
 
-    // ================= SEND REMINDER EMAIL =================
+    // Send reminder email
     public void sendReminderEmail(String toEmail, String messageText) throws IOException {
         Email from = new Email(mailFrom);
         Email to = new Email(toEmail);
