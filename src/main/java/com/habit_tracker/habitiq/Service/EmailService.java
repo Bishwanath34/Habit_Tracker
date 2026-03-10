@@ -11,56 +11,61 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+     @Value("${SENDGRID_API_KEY}")
+    private String sendGridApiKey;
 
-    @Value("${spring.mail.from}")
+    @Value("${EMAIL_FROM}")
     private String mailFrom;
 
-    // ================= SEND OTP EMAIL =================
-    public void sendOtpEmail(String toEmail, String otp) throws MessagingException {
+    // Send OTP email
+    public void sendOtpEmail(String toEmail, String otp) throws IOException {
+        Email from = new Email(mailFrom);
+        Email to = new Email(toEmail);
+        String subject = "HabitIQ – Email Verification OTP";
+        Content content = new Content("text/html",
+                "<div style=\"font-family:Arial,sans-serif\">" +
+                "<h2>Welcome to HabitIQ</h2>" +
+                "<p>Please verify your email using the OTP below:</p>" +
+                "<h1 style=\"color:#4CAF50;\">" + otp + "</h1>" +
+                "<p>This OTP will expire in 5 minutes.</p>" +
+                "<p>Thank you for using HabitIQ 🚀</p>" +
+                "</div>"
+        );
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        Mail mail = new Mail(from, subject, to, content);
 
-        helper.setFrom(mailFrom);
-        helper.setTo(toEmail);
-        helper.setSubject("HabitIQ – Email Verification OTP");
+        SendGrid sg = new SendGrid(sendGridApiKey);
+        Request request = new Request();
+        request.setMethod(Method.POST);
+        request.setEndpoint("mail/send");
+        request.setBody(mail.build());
+        Response response = sg.api(request);
 
-        // Classic string concatenation instead of text blocks
-        String content = "<div style=\"font-family:Arial,sans-serif\">"
-                + "<h2>Welcome to HabitIQ</h2>"
-                + "<p>Please verify your email using the OTP below:</p>"
-                + "<h1 style=\"color:#4CAF50;\">" + otp + "</h1>"
-                + "<p>This OTP will expire in 5 minutes.</p>"
-                + "<br>"
-                + "<p>Thank you for using HabitIQ 🚀</p>"
-                + "</div>";
-
-        helper.setText(content, true);
-
-        mailSender.send(message);
+        System.out.println("SendGrid OTP status: " + response.getStatusCode());
     }
 
-    // ================= SEND REMINDER EMAIL =================
-    public void sendReminderEmail(String toEmail, String messageText) throws MessagingException {
+    // Send reminder email
+    public void sendReminderEmail(String toEmail, String messageText) throws IOException {
+        Email from = new Email(mailFrom);
+        Email to = new Email(toEmail);
+        String subject = "HabitIQ Reminder ⏰";
+        Content content = new Content("text/html",
+                "<div style=\"font-family:Arial,sans-serif\">" +
+                "<h2>⏰ Habit Reminder</h2>" +
+                "<p>" + messageText + "</p>" +
+                "<p>Open HabitIQ and track your progress.</p>" +
+                "</div>"
+        );
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        Mail mail = new Mail(from, subject, to, content);
 
-        helper.setFrom(mailFrom);
-        helper.setTo(toEmail);
-        helper.setSubject("HabitIQ Reminder ⏰");
+        SendGrid sg = new SendGrid(sendGridApiKey);
+        Request request = new Request();
+        request.setMethod(Method.POST);
+        request.setEndpoint("mail/send");
+        request.setBody(mail.build());
+        Response response = sg.api(request);
 
-        String content = "<div style=\"font-family:Arial,sans-serif\">"
-                + "<h2>⏰ Habit Reminder</h2>"
-                + "<p>" + messageText + "</p>"
-                + "<br>"
-                + "<p>Open HabitIQ and track your progress.</p>"
-                + "</div>";
-
-        helper.setText(content, true);
-
-        mailSender.send(message);
+        System.out.println("SendGrid Reminder status: " + response.getStatusCode());
     }
 }
