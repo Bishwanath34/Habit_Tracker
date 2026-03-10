@@ -1,34 +1,43 @@
+# ==============================
 # Build stage
-FROM maven:3.8.4-eclipse-temurin-17 AS build
+# ==============================
+FROM maven:3.8.8-eclipse-temurin-17 AS build
 
+# Set working directory
 WORKDIR /app
 
-# Copy pom.xml and download dependencies (caching layer)
+# Copy pom.xml first to leverage Docker cache
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
 
-# Copy source code and build
+# Force update and download all dependencies
+RUN mvn dependency:resolve -U
+
+# Copy source code
 COPY src ./src
+
+# Build the application without running tests
 RUN mvn clean package -DskipTests
 
-# Run stage - Using Temurin JRE
+# ==============================
+# Run stage
+# ==============================
 FROM eclipse-temurin:17-jre-jammy
 
+# Set working directory
 WORKDIR /app
 
-# Install necessary utilities
-RUN apt-get update && apt-get install -y \
-    curl \
+# Install necessary utilities (curl for health check)
+RUN apt-get update && apt-get install -y curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy jar from build stage
+# Copy the jar from build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Create a non-root user to run the app
+# Create a non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Expose port
+# Expose the application port
 EXPOSE 8080
 
 # Health check
